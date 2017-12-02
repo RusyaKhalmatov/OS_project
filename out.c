@@ -17,24 +17,24 @@ int main()
   scanf("%d",&choice);
   printf("You entered: %d\n",choice);
   int ans=1;
-  while (ans!=0) {
+  while (choice!=0) {
   /* code */
   switch(choice)
   {
     case 1:
-      printf("ONe");
+      printf("ONe\n");
       printf("Choice: ");
-      scanf("%d", &ans);
+      scanf("%d", &choice);
       break;
     case 2:
-      printf("TWo");
+      printf("TWo\n");
       printf("Choice: ");
-      scanf("%d", &ans);
+      scanf("%d", &choice);
       break;
     case 3:
-      printf("Three");
+      printf("Three\n");
       printf("Choice: ");
-      scanf("%d", &ans);
+      scanf("%d", &choice);
       break;
 
   }

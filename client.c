@@ -10,30 +10,49 @@
 #include <arpa/inet.h>
 #define PORT 8888
 
-void order()
+void order() //function that takes the order from the client
 {
-  int choice;
-
-  printf("Enter your choice: ");
-  scanf("%d",&choice);
-  printf("You entered: %d\n",choice);
-
-  switch(choice)
+  int choice=0;
+  int quantity=0;
+  //printf("You entered: %d\n",choice);
+  int ans=1;
+  int orderArray[][] = {0};
+while (choice!=8){
+     printf("Enter your choice: ");
+     scanf("%d",&choice);
+  if (choice<9)
   {
-    case 1:
-      printf("ONe");
-      break;
-    case 2:
-      printf("TWo");
-      break;
-    case 3:
-      printf("Three");
-      break;
+          /*switch(choice)
+          {
+            case 1:
+              printf("One\n");
+              printf("Choice: ");
+              scanf("%d", &choice);
+              break;
+            case 2:
+              printf("TWo\n");
+              printf("Choice: ");
+              scanf("%d", &choice);
+              break;
+            case 3:
+              printf("Three\n");
+              printf("Choice: ");
+              scanf("%d", &choice);
+              break;
+          }*/
+/* now take the quantity of the product*/
+    printf("Enter the quantity: ");
+    scanf("%d",&quantity);
 
   }
-
+  else{
+    printf("Wrong input\n");
+  }
+}
+printf("Thank you for your order. Good bye!\n");
 
 }
+
 int main(int argc, char const *argv[])
 {
   struct sockaddr_in address;
@@ -42,6 +61,7 @@ int main(int argc, char const *argv[])
   char *hello = "Hello from client";
   char buffer[1024] = {0}, cchat[1024];
   char *bye = "bye";
+
   //printf("CREATING CLIENT SOCKET .....\n");
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
   {
@@ -68,16 +88,12 @@ int main(int argc, char const *argv[])
   valread = read( sock , buffer, 1024);
   printf("%s\n",buffer );
 
-
+  order(); // function takes the order from the client
 
   while(1)
   {
   memset(buffer, 0, sizeof(buffer));
   memset(cchat, 0, sizeof(cchat));
-  //printf("Enter your choice : ");
-  order(); // function takes the order from the client
-
-
 
   //fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
   //send(sock , cchat , strlen(cchat) , 0 );
