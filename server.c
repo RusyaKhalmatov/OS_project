@@ -88,7 +88,7 @@ int main(int argc , char *argv[])
 
     //type of socket created
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = htons( PORT );
 
     //bind the socket to localhost port 8888
@@ -100,7 +100,7 @@ int main(int argc , char *argv[])
     printf("Listener on port %d \n", PORT);
 
     //try to specify maximum of 3 pending connections for the master socket
-    if (listen(master_socket, 3) < 0)
+    if (listen(master_socket, 10) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);

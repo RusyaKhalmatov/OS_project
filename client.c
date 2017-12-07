@@ -22,28 +22,9 @@ while (choice!=8){
      scanf("%d",&choice);
   if (choice<9)
   {
-          /*switch(choice)
-          {
-            case 1:
-              printf("One\n");
-              printf("Choice: ");
-              scanf("%d", &choice);
-              break;
-            case 2:
-              printf("TWo\n");
-              printf("Choice: ");
-              scanf("%d", &choice);
-              break;
-            case 3:
-              printf("Three\n");
-              printf("Choice: ");
-              scanf("%d", &choice);
-              break;
-          }*/
 /* now take the quantity of the product*/
     printf("Enter the quantity: ");
     scanf("%d",&quantity);
-
   }
   else{
     printf("Wrong input\n");
