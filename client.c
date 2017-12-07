@@ -16,7 +16,7 @@ void order() //function that takes the order from the client
   int quantity=0;
   //printf("You entered: %d\n",choice);
   int ans=1;
-  int orderArray[][] = {0};
+//  int orderArray[][] = {0};
 while (choice!=8){
      printf("Enter your choice: ");
      scanf("%d",&choice);
