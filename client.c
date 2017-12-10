@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
-#define PORT 8888
+#define PORT 32568
 
 void order() //function that takes the order from the client
 {
@@ -52,13 +52,16 @@ int main(int argc, char const *argv[])
   //printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
   memset(&serv_addr, '0', sizeof(serv_addr)); // initialize serv_addr array with the value 0
   serv_addr.sin_family = AF_INET;
+  //serv_addr.sin_addr.s_addr = INADDR_ANY;
+  serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
   serv_addr.sin_port = htons(PORT);
   // Convert IPv4 and IPv6 addresses from text to binary form
-  if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //convert string '127.0.0.1' to the network address and copy the the sin_addr
+  /*if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //convert string '127.0.0.1' to the network address and copy the the sin_addr
   {
   printf("\nInvalid address/ Address not supported \n");
   return -1;
-  }
+}*/
   //printf("CONNECTING ON PORT 8888 TO COMMUNICATE WITH SERVER..\n");
   if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
   {

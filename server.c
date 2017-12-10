@@ -11,7 +11,7 @@
 #define SIZE 8
 #define TRUE   1
 #define FALSE  0
-#define PORT 8888
+#define PORT 32568
 
 void readingFromFile(char *filename, char messageArray[SIZE][50])// reads from a file menu, the entire menu
 {
@@ -51,8 +51,7 @@ int main(int argc , char *argv[])
     int max_sd;
     struct sockaddr_in address;
 
-    char buffer[1025];  //data buffer of 1K
-    char mesbuffer[1024]; //message buffer
+    char buffer[1025];  //data buffer of 1K    char mesbuffer[1024]; //message buffer
     char schat[1024];
     char menubuffer[50];
     char *bye = "bye";
@@ -88,8 +87,10 @@ int main(int argc , char *argv[])
 
     //type of socket created
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = htonl(INADDR_ANY);
-    address.sin_port = htons( PORT );
+    address.sin_addr.s_addr = INADDR_ANY;
+  //  address.sin_addr.s_addr = inet_addr("192.168.0.105");
+
+    address.sin_port = htons(PORT);
 
     //bind the socket to localhost port 8888
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
@@ -99,7 +100,7 @@ int main(int argc , char *argv[])
     }
     printf("Listener on port %d \n", PORT);
 
-    //try to specify maximum of 3 pending connections for the master socket
+    //try to specify maximum of 10 pending connections for the master socket
     if (listen(master_socket, 10) < 0)
     {
         perror("listen");
