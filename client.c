@@ -9,23 +9,28 @@
 #include <string.h>
 #include <arpa/inet.h>
 #define PORT 32568
+#define O_SIZE 10
 
-void order() //function that takes the order from the client
+void order(int orderArray[O_SIZE]) //function that takes the order from the client
 {
-  int choice=0;
-  int quantity=0;
+  int choice=0, i=0, quantity = 0, ans=1;
   //printf("You entered: %d\n",choice);
-  int ans=1;
-//  int orderArray[][] = {0};
+  //int orderArray[O_SIZE]= {0};
+
 while (choice!=8){
+
      printf("Enter your choice: ");
      scanf("%d",&choice);
+    orderArray[i] = choice;
+    i++;
   if (choice<9)
   {
     if(choice==8)break;
 /* now take the quantity of the product*/
     printf("Enter the quantity: ");
     scanf("%d",&quantity);
+    orderArray[i]=quantity;
+    i++;
   }
   else{
     printf("Wrong input\n");
@@ -33,6 +38,10 @@ while (choice!=8){
 }
 printf("Thank you for your order. Good bye!\n");
 
+  for(int j = 0; j<O_SIZE; j++)
+  {
+    printf("%d\n", orderArray[j]);
+  }
 }
 
 int main(int argc, char const *argv[])
@@ -43,6 +52,7 @@ int main(int argc, char const *argv[])
   char *hello = "Hello from client";
   char buffer[1024] = {0}, cchat[1024];
   char *bye = "bye";
+  int orderArray[O_SIZE]= {0};
 
   //printf("CREATING CLIENT SOCKET .....\n");
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -73,8 +83,8 @@ int main(int argc, char const *argv[])
   valread = read( sock , buffer, 1024);
   printf("%s\n",buffer );
 
-  order(); // function takes the order from the client
-
+  order(orderArray); // function takes the order from the client
+  //send(sock , orderArray , O_SIZE , 0 );//
   while(1)
   {
   memset(buffer, 0, sizeof(buffer));
