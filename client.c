@@ -22,6 +22,7 @@ while (choice!=8){
      scanf("%d",&choice);
   if (choice<9)
   {
+    if(choice==8)break;
 /* now take the quantity of the product*/
     printf("Enter the quantity: ");
     scanf("%d",&quantity);
@@ -53,7 +54,7 @@ int main(int argc, char const *argv[])
   memset(&serv_addr, '0', sizeof(serv_addr)); // initialize serv_addr array with the value 0
   serv_addr.sin_family = AF_INET;
   //serv_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  serv_addr.sin_addr.s_addr = inet_addr("192.168.43.169");
 
   serv_addr.sin_port = htons(PORT);
   // Convert IPv4 and IPv6 addresses from text to binary form

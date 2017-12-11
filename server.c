@@ -11,7 +11,7 @@
 #define SIZE 8
 #define TRUE   1
 #define FALSE  0
-#define PORT 8888
+#define PORT 32568
 
 void readingFromFile(char *filename, char messageArray[SIZE][50])// reads from a file menu, the entire menu
 {
@@ -88,7 +88,8 @@ int main(int argc , char *argv[])
 
     //type of socket created
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
+    //address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.s_addr = inet_addr("192.168.43.169");
     address.sin_port = htons( PORT );
 
     //bind the socket to localhost port 8888
