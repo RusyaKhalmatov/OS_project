@@ -11,6 +11,36 @@
 #define PORT 32568
 #define O_SIZE 10
 
+void order(int orderArray[O_SIZE]); //function that takes the order from the client
+int connection();
+int main(int argc, char const *argv[])
+{
+  int sock = connection();
+  int orderArray[O_SIZE]= {0};
+  char buffer[1024] = {0}, cchat[1024];
+  char *hello = "Hello from client";
+  char *bye = "bye";
+
+  int valread = read( sock , buffer, 1024);
+  printf("%s\n",buffer );
+
+  order(orderArray); // function takes the order from the client
+
+  while(1)
+  {
+    memset(buffer, 0, sizeof(buffer));
+    memset(cchat, 0, sizeof(cchat));
+    //fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
+    //send(sock , cchat , strlen(cchat) , 0 );
+    valread = read( sock , buffer, 1024);
+    printf("Server: ");
+    printf("%s\n",buffer );
+    cchat[strlen(cchat)] = '\0';
+    if(strncmp(cchat, bye, strlen(bye))==0) break;
+  }
+  return 0;
+}
+
 void order(int orderArray[O_SIZE]) //function that takes the order from the client
 {
   int choice=0, i=0, quantity = 0, ans=1;
@@ -43,64 +73,29 @@ void order(int orderArray[O_SIZE]) //function that takes the order from the clie
       printf("%d\n", orderArray[j]);
     }
 }
-
-
-void connection()
+int connection()
 {
+    struct sockaddr_in address;
+    int sock = 0;
+    struct sockaddr_in serv_addr;
 
-
-}
-
-
-int main(int argc, char const *argv[])
-{
-  struct sockaddr_in address;
-  int sock = 0, valread;
-  struct sockaddr_in serv_addr;
-  char *hello = "Hello from client";
-  char buffer[1024] = {0}, cchat[1024];
-  char *bye = "bye";
-  int orderArray[O_SIZE]= {0};
-
-  //printf("CREATING CLIENT SOCKET .....\n");
-  if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-  {
-    printf("\n Socket creation error \n");
+    //printf("CREATING CLIENT SOCKET .....\n");
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+      printf("\n Socket creation error \n");
+      return -1;
+    }
+    //printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
+    memset(&serv_addr, '0', sizeof(serv_addr)); // initialize serv_addr array with the value 0
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    //serv_addr.sin_addr.s_addr = inet_addr("192.168.43.169");
+    serv_addr.sin_port = htons(PORT);
+    //printf("CONNECTING ON PORT 8888 TO COMMUNICATE WITH SERVER..\n");
+    if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+      printf("\nConnection Failed \n");
     return -1;
-  }
-  //printf("DEFINING SOCKET FAMILY, ADDRESS & PORT .....\n");
-  memset(&serv_addr, '0', sizeof(serv_addr)); // initialize serv_addr array with the value 0
-  serv_addr.sin_family = AF_INET;
-  //serv_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_addr.sin_addr.s_addr = inet_addr("192.168.43.169");
-
-  serv_addr.sin_port = htons(PORT);
-  //printf("CONNECTING ON PORT 8888 TO COMMUNICATE WITH SERVER..\n");
-  if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-  {
-    printf("\nConnection Failed \n");
-  return -1;
-  }
-
-  valread = read( sock , buffer, 1024);
-  printf("%s\n",buffer );
-
-  order(orderArray); // function takes the order from the client
-  //send(sock , orderArray , O_SIZE , 0 );//
-  while(1)
-  {
-  memset(buffer, 0, sizeof(buffer));
-  memset(cchat, 0, sizeof(cchat));
-
-  //fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
-  //send(sock , cchat , strlen(cchat) , 0 );
-
-  valread = read( sock , buffer, 1024);
-  printf("Server: ");
-  printf("%s\n",buffer );
-  cchat[strlen(cchat)] = '\0';
-  if(strncmp(cchat, bye, strlen(bye))==0)
-  break;
-}
-  return 0;
+    }
+    return sock;
   }

@@ -88,8 +88,8 @@ int main(int argc , char *argv[])
 
     //type of socket created
     address.sin_family = AF_INET;
-    //address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_addr.s_addr = inet_addr("192.168.43.169");
+    address.sin_addr.s_addr = INADDR_ANY;
+    //address.sin_addr.s_addr = inet_addr("192.168.43.169");
     address.sin_port = htons( PORT );
 
     //bind the socket to localhost port 8888
