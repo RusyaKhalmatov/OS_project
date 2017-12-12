@@ -17,32 +17,40 @@ void order(int orderArray[O_SIZE]) //function that takes the order from the clie
   //printf("You entered: %d\n",choice);
   //int orderArray[O_SIZE]= {0};
 
-while (choice!=8){
+    while (choice!=8)
+    {
+         printf("Enter your choice: ");
+         scanf("%d",&choice);
+        orderArray[i] = choice;
+        i++;
+      if (choice<9)
+      {
+        if(choice==8)break;
+        /* now take the quantity of the product*/
+        printf("Enter the quantity: ");
+        scanf("%d",&quantity);
+        orderArray[i]=quantity;
+        i++;
+      }
+      else{
+        printf("Wrong input\n");
+      }
+    }
+    printf("Thank you for your order. Good bye!\n");
 
-     printf("Enter your choice: ");
-     scanf("%d",&choice);
-    orderArray[i] = choice;
-    i++;
-  if (choice<9)
-  {
-    if(choice==8)break;
-/* now take the quantity of the product*/
-    printf("Enter the quantity: ");
-    scanf("%d",&quantity);
-    orderArray[i]=quantity;
-    i++;
-  }
-  else{
-    printf("Wrong input\n");
-  }
+    for(int j = 0; j<O_SIZE; j++)
+    {
+      printf("%d\n", orderArray[j]);
+    }
 }
-printf("Thank you for your order. Good bye!\n");
 
-  for(int j = 0; j<O_SIZE; j++)
-  {
-    printf("%d\n", orderArray[j]);
-  }
+
+void connection()
+{
+
+
 }
+
 
 int main(int argc, char const *argv[])
 {
@@ -67,12 +75,6 @@ int main(int argc, char const *argv[])
   serv_addr.sin_addr.s_addr = inet_addr("192.168.43.169");
 
   serv_addr.sin_port = htons(PORT);
-  // Convert IPv4 and IPv6 addresses from text to binary form
-  /*if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0) //convert string '127.0.0.1' to the network address and copy the the sin_addr
-  {
-  printf("\nInvalid address/ Address not supported \n");
-  return -1;
-}*/
   //printf("CONNECTING ON PORT 8888 TO COMMUNICATE WITH SERVER..\n");
   if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
   {
