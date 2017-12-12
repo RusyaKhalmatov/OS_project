@@ -13,6 +13,7 @@
 
 void order(int orderArray[O_SIZE]); //function that takes the order from the client
 int connection();
+void send_order();
 int main(int argc, char const *argv[])
 {
   int sock = connection();
@@ -99,3 +100,9 @@ int connection()
     }
     return sock;
   }
+
+void send_order(int array, int size, int sock)  // function that sends the order array to the server
+{
+  write(sock, &size, sizeof(size));
+  write(sock, array, sizeof(array));
+}
