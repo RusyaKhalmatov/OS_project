@@ -14,14 +14,17 @@
 #define PORT 32568
 
 void readingFromFile(char *filename, char messageArray[SIZE][50]);// reads from a file menu, the entire menu
-int connection(); // creating a new socket
+int connection()
+{
+
+}
 int main(int argc , char *argv[])
 {
     int opt = TRUE;
-    int addr_length , new_socket , client_socket[30] ,
+    int master_socket , addr_length , new_socket , client_socket[30] ,
           numb_of_clients = 30 , activity, i , valread , sd;
     int max_sd;
-
+    struct sockaddr_in address;
 
     char buffer[1025];  //data buffer of 1K
     char mesbuffer[1024]; //message buffer
@@ -42,7 +45,46 @@ int main(int argc , char *argv[])
         client_socket[i] = 0;
     }
 
-    int master_socket = connection();//create a socket, establish connection
+    //create a master socket
+    if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
+    {
+        perror("Socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    //set master socket to allow multiple connections ,
+    //this is just a good habit, it will work without this
+    if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+          sizeof(opt)) < 0 )
+    {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+
+    //type of socket created
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    //address.sin_addr.s_addr = inet_addr("192.168.43.169");
+    address.sin_port = htons( PORT );
+
+    //bind the socket to localhost port 8888
+    if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
+    {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+    printf("Listener on port %d \n", PORT);
+
+    //try to specify maximum of 3 pending connections for the master socket
+    if (listen(master_socket, 3) < 0)
+    {
+        perror("listen");
+        exit(EXIT_FAILURE);
+    }
+
+    //accept the incoming connection
+    addr_length = sizeof(address);
+    puts("Waiting for connections ...");
 
     while(TRUE)
     {
@@ -197,52 +239,4 @@ void readingFromFile(char *filename, char messageArray[SIZE][50])// reads from a
     if (line)
         free(line);
 
-}
-int connection()
-{
-  struct sockaddr_in address;
-  int master_socket;
-
-  //create a master socket
-  if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
-  {
-      perror("Socket creation failed");
-      exit(EXIT_FAILURE);
-  }
-
-  //set master socket to allow multiple connections ,
-  //this is just a good habit, it will work without this
-  if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-        sizeof(opt)) < 0 )
-  {
-      perror("setsockopt");
-      exit(EXIT_FAILURE);
-  }
-
-  //type of socket created
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = INADDR_ANY;
-  //address.sin_addr.s_addr = inet_addr("192.168.43.169");
-  address.sin_port = htons( PORT );
-
-  //bind the socket to localhost port 8888
-  if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
-  {
-      perror("bind failed");
-      exit(EXIT_FAILURE);
-  }
-  printf("Listener on port %d \n", PORT);
-
-  //try to specify maximum of 10 pending connections for the master socket
-  if (listen(master_socket, 10) < 0)
-  {
-      perror("listen");
-      exit(EXIT_FAILURE);
-  }
-
-  //accept the incoming connection
-  addr_length = sizeof(address);
-  puts("Waiting for connections ...");
-
-  return master_socket;
 }
