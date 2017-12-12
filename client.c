@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
   printf("%s\n",buffer );
 
   order(orderArray); // function takes the order from the client
-
+  send_order(orderArray,O_SIZE,sock);
   while(1)
   {
     memset(buffer, 0, sizeof(buffer));
@@ -69,10 +69,11 @@ void order(int orderArray[O_SIZE]) //function that takes the order from the clie
     }
     printf("Thank you for your order. Good bye!\n");
 
-    for(int j = 0; j<O_SIZE; j++)
+
+    /*for(int j = 0; j<O_SIZE; j++)
     {
       printf("%d\n", orderArray[j]);
-    }
+    }*/
 }
 int connection()
 {
@@ -104,5 +105,5 @@ int connection()
 void send_order(int array, int size, int sock)  // function that sends the order array to the server
 {
   write(sock, &size, sizeof(size));
-  write(sock, array, sizeof(array));
+ write(sock, &array, sizeof(array));
 }

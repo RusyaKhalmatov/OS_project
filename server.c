@@ -51,7 +51,7 @@ int main(int argc , char *argv[])
     //set master socket to allow multiple connections ,
     //this is just a good habit, it will work without this
     if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
-          sizeof(opt)) < 0 )
+          sizeof(opt)) < 0)
     {
         perror("setsockopt");
         exit(EXIT_FAILURE);
@@ -175,8 +175,15 @@ int main(int argc , char *argv[])
             {
                 //Check if it was for closing , and also read the
                 //incoming message
+                //int order_array_size = read( sd , buffer, 1024);
 
-
+               int order_Array[10] = {0};
+               read(sd, order_Array, 10);
+                printf("See your order: \n");
+                    for(int j = 0; j<10; j++)
+                    {
+                      printf("%d\n", order_Array[j]);
+                    }
                 if ((valread = read( sd , buffer, 1024)) == 0)
                 {
                     //Somebody disconnected , get his details and print
