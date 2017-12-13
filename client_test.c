@@ -11,28 +11,23 @@
 #define PORT 32568
 #define O_SIZE 10
 
-void order(char orderArray[O_SIZE]); //function that takes the order from the client
+void order(int orderArray[O_SIZE]); //function that takes the order from the client
 int connection();
-void send_order(char array, int size, int sock);
+void send_order();
 int main(int argc, char const *argv[])
 {
   int sock = connection();
-  char orderArray[O_SIZE]= {0};
+  int orderArray[O_SIZE]= {0};
   char buffer[1024] = {0}, cchat[1024];
   char *hello = "Hello from client";
   char *bye = "bye";
 
   int valread = read( sock , buffer, 1024);
-  printf("%s\n",buffer);
+  printf("%s\n",buffer );
 
-  order(orderArray);
-  printf("%c\n", orderArray[0]);// function takes the order from the client
-
-
-  send(sock, orderArray, strlen(orderArray), 0); // send order array to the client
-
-  //send_order(orderArray,O_SIZE,sock);
-  /*while(1)
+  order(orderArray); // function takes the order from the client
+  send_order(orderArray,O_SIZE,sock);
+  while(1)
   {
     memset(buffer, 0, sizeof(buffer));
     memset(cchat, 0, sizeof(cchat));
@@ -43,15 +38,13 @@ int main(int argc, char const *argv[])
     printf("%s\n",buffer );
     cchat[strlen(cchat)] = '\0';
     if(strncmp(cchat, bye, strlen(bye))==0) break;
-  }*/
-
-
+  }
   return 0;
 }
 
-void order(char orderArray[O_SIZE]) //function that takes the order from the client
+void order(int orderArray[O_SIZE]) //function that takes the order from the client
 {
-  int  choice=0, i=0, quantity = 0, ans=1;
+  int choice=0, i=0, quantity = 0, ans=1;
   //printf("You entered: %d\n",choice);
   //int orderArray[O_SIZE]= {0};
 
@@ -59,7 +52,7 @@ void order(char orderArray[O_SIZE]) //function that takes the order from the cli
     {
          printf("Enter your choice: ");
          scanf("%d",&choice);
-        orderArray[i] = (char) choice;
+        orderArray[i] = choice;
         i++;
       if (choice<9)
       {
@@ -67,7 +60,7 @@ void order(char orderArray[O_SIZE]) //function that takes the order from the cli
         /* now take the quantity of the product*/
         printf("Enter the quantity: ");
         scanf("%d",&quantity);
-        orderArray[i]=(char)quantity;
+        orderArray[i]=quantity;
         i++;
       }
       else{
@@ -109,9 +102,8 @@ int connection()
     return sock;
   }
 
-void send_order(char array, int size, int sock)  // function that sends the order array to the server
+void send_order(int array, int size, int sock)  // function that sends the order array to the server
 {
-//  send(sock, )
-  //write(sock, &size, sizeof(size));
- //write(sock, &array, sizeof(array));
+  write(sock, &size, sizeof(size));
+ write(sock, &array, sizeof(array));
 }

@@ -177,13 +177,11 @@ int main(int argc , char *argv[])
                 //incoming message
                 //int order_array_size = read( sd , buffer, 1024);
 
-               int order_Array[10] = {0};
-               read(sd, order_Array, 10);
+               char order_Array[10] = {0};
+               int order = read(sd, order_Array, 10);
                 printf("See your order: \n");
-                    for(int j = 0; j<10; j++)
-                    {
-                      printf("%d\n", order_Array[j]);
-                    }
+                printf("%s\n", order_Array);
+
                 if ((valread = read( sd , buffer, 1024)) == 0)
                 {
                     //Somebody disconnected , get his details and print
