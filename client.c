@@ -80,7 +80,7 @@ int main(int argc, char const *argv[])
 
 
   //send_order(orderArray,O_SIZE,sock);
-  while(1)
+  /*while(1)
   {
     memset(buffer, 0, sizeof(buffer));
     memset(cchat, 0, sizeof(cchat));
@@ -91,7 +91,7 @@ int main(int argc, char const *argv[])
     printf("%s\n",buffer );
     cchat[strlen(cchat)] = '\0';
     if(strncmp(cchat, bye, strlen(bye))==0) break;
-  }
+  }*/
 
 
   return 0;

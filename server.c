@@ -167,13 +167,13 @@ int main(int argc , char *argv[])
                 //incoming message
                 //int order_array_size = read( sd , buffer, 1024);
 
-               char order_Array[60] = {0};
+              char order_Array[60];
                int intOrderArray[10] = {0};
-               int order = recv(sd, order_Array, 60, 0);
+               /*int order = read(sd, order_Array, 60);
                process_order(order_Array, 60, intOrderArray);
                printf("%s\n", order_Array);
                printf("See your order: \n");
-
+*/
                /*for(int k = 0; k<10;k++)
                {
                  printf("%d\n", intOrderArray[k]);
@@ -208,9 +208,16 @@ int main(int argc , char *argv[])
                   char *mes = "Got it";
                     //set the string terminating NULL byte on the end
                     //of the data read
+                  //  buffer[valread] = '\0';
                     buffer[valread] = '\0';
-                    printf("Message from port(%d): %s\n",ntohs(address.sin_port),buffer);
 
+                    printf("Message from port(%d): %s\n",ntohs(address.sin_port),buffer);
+                    printf("SEe the result: \n");
+                    process_order(buffer, 60, intOrderArray);
+                    /*for(int k = 0; k<10;k++)
+                    {
+                      printf("%d\n", intOrderArray[k]);
+                    }*/
                     //send(sd , buffer , strlen(buffer) , 0 );
                     send(sd , mes , strlen(mes) , 0 );
                 }
@@ -268,9 +275,10 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf2);
             sscanf(buf1, "%d", &ord);
             order[inc] = ord;
-            printf("%d\n", ord);
-            printf("case one\n");
-            i+=2;
+            /*printf("%d\n", ord);
+            printf("case one\n");*/
+            i=i+2;
+            //i+=2;
           }
 
           if(or_array[next+1]=='?')
@@ -281,9 +289,11 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf3);
             sscanf(buf1, "%d", &ord);
             order[inc] = ord;
-            printf("%d\n", ord);
-              printf("case two\n");
-            i+=3;
+            /*printf("%d\n", ord);
+              printf("case two\n");*/
+            i=i+3;
+
+          //  i+=3;
 
             /*strcat(buf1,or_array[i]);
             strcat(buf1,or_array[next]);*/
@@ -298,9 +308,10 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf2);
             sscanf(buf1, "%d", &amo);
             order[inc] = amo;
-            printf("%d\n", amo);
-              printf("case three\n");
-            i+=2;
+            /*printf("%d\n", amo);
+              printf("case three\n");*/
+            //i+=2;
+            i=i+2;
           }
           if(or_array[next+1]=='!')
           {
@@ -310,9 +321,10 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf3);
             sscanf(buf1, "%d", &amo);
             order[inc] = amo;
-            printf("%d\n", amo);
-              printf("case four\n");
-            i+=3;
+            /*printf("%d\n", amo);
+              printf("case four\n");*/
+              i=i+3;
+            //i+=3;
             /*strcat(buf1,or_array[i]);
             strcat(buf1,or_array[next]);*/
           }
