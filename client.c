@@ -7,9 +7,59 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <math.h>
 #include <arpa/inet.h>
 #define PORT 32568
 #define O_SIZE 10
+
+char* parse(int number) {
+
+
+    int digits = 0;
+    int temp = number;
+
+    while (temp != 0) {
+
+        temp /= 10;
+        digits++;
+    }
+    temp = number;
+    char str[digits + 1];
+    for (int i = 0; i < digits; i++) {
+
+        str[i] = (char)(temp % 10) + 48;
+        temp /= 10;
+    }
+
+    str[digits] = '\0';
+
+    char* result = malloc(sizeof(char) * digits + 1);
+    int j = digits - 1;
+    for (int i = 0; i < digits; i++) {
+
+        result[i] = str[j];
+        j--;
+    }
+    result[digits] = '\0';
+
+    return result;
+}
+
+int cast(char* str) {
+
+    int result = 0;
+    int digits = strlen(str);
+    int power = digits;
+
+    for (int i = 0; i < digits; i++) {
+
+        result += ((int)str[i] - 48) * ((int)pow(10, power - 1));
+        power--;
+    }
+
+    return result;
+
+}
 
 void order(char orderArray[O_SIZE]); //function that takes the order from the client
 int connection();
@@ -25,66 +75,85 @@ int main(int argc, char const *argv[])
   int valread = read( sock , buffer, 1024);
   printf("%s\n",buffer);
 
-  order(orderArray);
-  printf("%c\n", orderArray[0]);// function takes the order from the client
-
-
+  order(orderArray); // function takes the order from the client
   send(sock, orderArray, strlen(orderArray), 0); // send order array to the client
 
+
   //send_order(orderArray,O_SIZE,sock);
-  /*while(1)
+  while(1)
   {
     memset(buffer, 0, sizeof(buffer));
     memset(cchat, 0, sizeof(cchat));
-    //fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
-    //send(sock , cchat , strlen(cchat) , 0 );
+    fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
+    send(sock , cchat , strlen(cchat) , 0 );
     valread = read( sock , buffer, 1024);
     printf("Server: ");
     printf("%s\n",buffer );
     cchat[strlen(cchat)] = '\0';
     if(strncmp(cchat, bye, strlen(bye))==0) break;
-  }*/
+  }
 
 
   return 0;
 }
 
-void order(char orderArray[O_SIZE]) //function that takes the order from the client
+void order(char items[O_SIZE]) //function that takes the order from the client
 {
-  int  choice=0, i=0, quantity = 0, ans=1;
+  int  choice=0, ans=1;
   //printf("You entered: %d\n",choice);
   //int orderArray[O_SIZE]= {0};
 
-    while (choice!=8)
-    {
-         printf("Enter your choice: ");
-         scanf("%d",&choice);
-        orderArray[i] = (char) choice;
-        i++;
-      if (choice<9)
-      {
-        if(choice==8)break;
-        /* now take the quantity of the product*/
-        printf("Enter the quantity: ");
-        scanf("%d",&quantity);
-        orderArray[i]=(char)quantity;
-        i++;
-      }
-      else{
-        printf("Wrong input\n");
-      }
-    }
-    printf("Thank you for your order. Good bye!\n");
+        int meal_counter = 0;
+
+        int amount = 0;
+
+        char client_address[40];
+        char client_phone[40];
+
+        do {
+
+            //printMenu(items, num_rows);
+            printf("Enter: ");
+            scanf("%d", &choice);
+
+            if (choice == 0)
+                break;
+
+            printf("Enter amount: ");
+            scanf("%d", &amount);
+
+            char* temp1 = parse(choice);
+
+            strcat(items, temp1);
+            strcat(items, "?");
+
+            char* temp2 = parse(amount);
+
+            strcat(items, temp2);
+            strcat(items, "!");
+
+            ++meal_counter;
+
+        } while(choice != 0);
+
+        // printf("Enter Address: ");
+        // scanf("%s", client_address);
+        //int t = send(sock, client_address, strlen(client_address), 0);
+        //printf("%d\n", t);
+        // printf("Enter Phone: ");
+        // scanf("%s", client_phone);
+        //int y = send(sock, client_phone, strlen(client_address), 0);
+        //printf("%d\n", y);
+
+        printf("%s\n", items);
+      //  char* x = parse(meal_counter);
+      //  strcat(items, x);
+      //  printf("%s\n", items);
 
 
-    /*for(int j = 0; j<O_SIZE; j++)
-    {
-      printf("%d\n", orderArray[j]);
-    }*/
 }
 int connection()
 {
-    struct sockaddr_in address;
     int sock = 0;
     struct sockaddr_in serv_addr;
 

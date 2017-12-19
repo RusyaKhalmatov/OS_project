@@ -14,6 +14,7 @@
 #define PORT 32568
 
 void readingFromFile(char *filename, char messageArray[SIZE][50]);// reads from a file menu, the entire menu
+void process_order(char or_array[],int size, int order[50]);
 int main(int argc , char *argv[])
 {
     int opt = TRUE;
@@ -27,7 +28,7 @@ int main(int argc , char *argv[])
     char schat[1024];
     char menubuffer[50];
     char *bye = "bye";
-    char messageArray[SIZE][50] = {""};
+    char messageArray[SIZE][50] = {""}; // menu array
     //set of socket descriptors
     fd_set readfds;
 
@@ -48,8 +49,7 @@ int main(int argc , char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    //set master socket to allow multiple connections ,
-    //this is just a good habit, it will work without this
+    // allow multiple connections ,
     if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
           sizeof(opt)) < 0)
     {
@@ -71,8 +71,8 @@ int main(int argc , char *argv[])
     }
     printf("Listener on port %d \n", PORT);
 
-    //try to specify maximum of 3 pending connections for the master socket
-    if (listen(master_socket, 3) < 0)
+    //maximum 10 connections
+    if (listen(master_socket, 10) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);
@@ -128,25 +128,15 @@ int main(int argc , char *argv[])
             printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs
             (address.sin_port));
 
-            //send new connection greeting message
-            /*if( send(new_socket, message, strlen(message), 0) != strlen(message) )
-            {  //  char *message = "HELLO FROM THE SERVER \r\n";
-
-            perror("send");
-          }*/
-          //char *filename = "menu";
-
-
-                      //reading(&filename, menubuffer); // initialize the array of menu
 
           /********SENDING MESSAGE TO THE CLIENT*/
 
           readingFromFile("menu",messageArray);//read from file MENU to the messageArray
           send(new_socket, message, strlen(message), 0) != strlen(message); // send welcome message
-          //send(new_socket, menubuffer, strlen(menubuffer), 0) != strlen(menubuffer); // send welcome message
+
           for(int j=0; j< SIZE; j++)
           {
-            send(new_socket, messageArray[j], strlen(messageArray[j]),0); // send welcome message
+            send(new_socket, messageArray[j], strlen(messageArray[j]),0); // send menu message
           }
 
             puts("Welcome message sent successfully");
@@ -177,10 +167,27 @@ int main(int argc , char *argv[])
                 //incoming message
                 //int order_array_size = read( sd , buffer, 1024);
 
-               char order_Array[10] = {0};
-               int order = read(sd, order_Array, 10);
-                printf("See your order: \n");
-                printf("%s\n", order_Array);
+               char order_Array[60] = {0};
+               int intOrderArray[10] = {0};
+               int order = recv(sd, order_Array, 60, 0);
+               process_order(order_Array, 60, intOrderArray);
+               printf("%s\n", order_Array);
+               printf("See your order: \n");
+
+               /*for(int k = 0; k<10;k++)
+               {
+                 printf("%d\n", intOrderArray[k]);
+               }*/
+
+              // printf("%s\n", order_Array);
+              /*printf("%c\n", order_Array[0]);
+              printf("%c\n", order_Array[1]);
+              printf("%c\n", order_Array[2]);
+              printf("%c\n", order_Array[3]);
+              printf("%c\n", order_Array[4]);
+              printf("%c\n", order_Array[5]);
+              printf("%c\n", order_Array[6]);
+              printf("%c\n", order_Array[7]);*/
 
                 if ((valread = read( sd , buffer, 1024)) == 0)
                 {
@@ -233,13 +240,86 @@ void readingFromFile(char *filename, char messageArray[SIZE][50])// reads from a
       i++;
     }
 
-    /*int n = i;
-    for (int j = 0; j < n; j++) /* output each word read */
-  /*  {
-            printf ("%s", messageArray[j]);
-    }*/
     fclose(fp);
     if (line)
         free(line);
+
+}
+
+void process_order(char or_array[],int size, int order[50])
+{
+  int next = 0;
+  int inc = 0;
+  for(int i=0; i<size; i++)
+  {
+    char buf1[4] = "0";
+    char buf2[4] = {0};
+    char buf3[4]={0};
+    int ord=0;
+    int amo=0;
+    next = i+1;
+
+        if(or_array[next]=='?' || or_array[next+1]=='?')
+      //  if(strncmp(or_array[next],"?",1)==0 || strncmp((char)or_array[next+1],"?",1)==0 )
+      {
+          if(or_array[next]=='?')
+          {
+            buf2[0] = or_array[i];
+            strcat(buf1,buf2);
+            sscanf(buf1, "%d", &ord);
+            order[inc] = ord;
+            printf("%d\n", ord);
+            printf("case one\n");
+            i+=2;
+          }
+
+          if(or_array[next+1]=='?')
+          {
+            buf2[0] = or_array[i];
+            buf3[0] = or_array[next];
+            strcat(buf1, buf2);
+            strcat(buf1,buf3);
+            sscanf(buf1, "%d", &ord);
+            order[inc] = ord;
+            printf("%d\n", ord);
+              printf("case two\n");
+            i+=3;
+
+            /*strcat(buf1,or_array[i]);
+            strcat(buf1,or_array[next]);*/
+          }
+        }
+
+        if(or_array[next]=='!' || or_array[next+1]=='!')
+        {
+          if(or_array[next]=='!')
+          {
+            buf2[0] = or_array[i];
+            strcat(buf1,buf2);
+            sscanf(buf1, "%d", &amo);
+            order[inc] = amo;
+            printf("%d\n", amo);
+              printf("case three\n");
+            i+=2;
+          }
+          if(or_array[next+1]=='!')
+          {
+            buf2[0] = or_array[i];
+            buf3[0] = or_array[next];
+            strcat(buf1,buf2);
+            strcat(buf1,buf3);
+            sscanf(buf1, "%d", &amo);
+            order[inc] = amo;
+            printf("%d\n", amo);
+              printf("case four\n");
+            i+=3;
+            /*strcat(buf1,or_array[i]);
+            strcat(buf1,or_array[next]);*/
+          }
+
+
+        }
+  inc++;
+  }
 
 }
