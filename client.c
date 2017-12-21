@@ -71,29 +71,21 @@ int main(int argc, char const *argv[])
   char buffer[1024] = {0}, cchat[1024];
   char *hello = "Hello from client";
   char *bye = "bye";
-
+char choice, amount;
   int valread = read( sock , buffer, 1024);
   printf("%s\n",buffer);
 
-  order(orderArray); // function takes the order from the client
-  send(sock, orderArray, strlen(orderArray), 0); // send order array to the client
+  //order(orderArray); // function takes the order from the client
+//  send(sock, orderArray, strlen(orderArray), 0); // send order array to the client
+  printf("Enter your choice: ");
+  scanf("%s", &choice);
+  orderArray[0] = choice;
+  printf("Enter amount: ");
+  scanf("%s", &amount);
+  orderArray[1]=amount;
+  printf("%s\n", orderArray);
 
-
-  //send_order(orderArray,O_SIZE,sock);
-  /*while(1)
-  {
-    memset(buffer, 0, sizeof(buffer));
-    memset(cchat, 0, sizeof(cchat));
-    fgets (cchat, sizeof(cchat), stdin); // take the message from the terminal
-    send(sock , cchat , strlen(cchat) , 0 );
-    valread = read( sock , buffer, 1024);
-    printf("Server: ");
-    printf("%s\n",buffer );
-    cchat[strlen(cchat)] = '\0';
-    if(strncmp(cchat, bye, strlen(bye))==0) break;
-  }*/
-
-
+  send(sock , orderArray , strlen(orderArray) , 0 );
   return 0;
 }
 

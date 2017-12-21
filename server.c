@@ -18,14 +18,13 @@ void process_order(char or_array[],int size, int order[50]);
 int main(int argc , char *argv[])
 {
     int opt = TRUE;
-    int master_socket , addr_length , new_socket , client_socket[30] ,
+    int mainSocket , addr_length , new_socket , client_socket[30] ,
           numb_of_clients = 30 , activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
 
     char buffer[1025];  //data buffer of 1K
     char mesbuffer[1024]; //message buffer
-    char schat[1024];
     char menubuffer[50];
     char *bye = "bye";
     char messageArray[SIZE][50] = {""}; // menu array
@@ -43,14 +42,14 @@ int main(int argc , char *argv[])
     }
 
     //create a master socket
-    if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
+    if( (mainSocket = socket(AF_INET , SOCK_STREAM , 0)) == 0)
     {
         perror("Socket creation failed");
         exit(EXIT_FAILURE);
     }
 
     // allow multiple connections ,
-    if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+    if( setsockopt(mainSocket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
           sizeof(opt)) < 0)
     {
         perror("setsockopt");
@@ -64,7 +63,7 @@ int main(int argc , char *argv[])
     address.sin_port = htons( PORT );
 
     //bind the socket to localhost port 8888
-    if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
+    if (bind(mainSocket, (struct sockaddr *)&address, sizeof(address))<0)
     {
         perror("bind failed");
         exit(EXIT_FAILURE);
@@ -72,7 +71,7 @@ int main(int argc , char *argv[])
     printf("Listener on port %d \n", PORT);
 
     //maximum 10 connections
-    if (listen(master_socket, 10) < 0)
+    if (listen(mainSocket, 10) < 0)
     {
         perror("listen");
         exit(EXIT_FAILURE);
@@ -88,8 +87,8 @@ int main(int argc , char *argv[])
         FD_ZERO(&readfds);
 
         //add master socket to set
-        FD_SET(master_socket, &readfds);
-        max_sd = master_socket;
+        FD_SET(mainSocket, &readfds);
+        max_sd = mainSocket;
 
         //add child sockets to set
         for ( i = 0 ; i < numb_of_clients ; i++)
@@ -117,9 +116,9 @@ int main(int argc , char *argv[])
 
         //If something happened on the master socket ,
         //then its an incoming connection
-        if (FD_ISSET(master_socket, &readfds))
+        if (FD_ISSET(mainSocket, &readfds))
         {
-          if ((new_socket = accept(master_socket, (struct sockaddr *)&address, (socklen_t*)&addr_length))<0)
+          if ((new_socket = accept(mainSocket, (struct sockaddr *)&address, (socklen_t*)&addr_length))<0)
             {
             perror("accept");
             exit(EXIT_FAILURE);
@@ -201,8 +200,6 @@ int main(int argc , char *argv[])
                     close( sd );
                     client_socket[i] = 0;
                 }
-
-                //Echo back the message that came in
                 else
                 {
                   char *mes = "Got it";
@@ -212,13 +209,6 @@ int main(int argc , char *argv[])
                     buffer[valread] = '\0';
 
                     printf("Message from port(%d): %s\n",ntohs(address.sin_port),buffer);
-                    printf("SEe the result: \n");
-                    process_order(buffer, 60, intOrderArray);
-                    /*for(int k = 0; k<10;k++)
-                    {
-                      printf("%d\n", intOrderArray[k]);
-                    }*/
-                    //send(sd , buffer , strlen(buffer) , 0 );
                     send(sd , mes , strlen(mes) , 0 );
                 }
             }
@@ -275,8 +265,6 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf2);
             sscanf(buf1, "%d", &ord);
             order[inc] = ord;
-            /*printf("%d\n", ord);
-            printf("case one\n");*/
             i=i+2;
             //i+=2;
           }
@@ -289,8 +277,6 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf3);
             sscanf(buf1, "%d", &ord);
             order[inc] = ord;
-            /*printf("%d\n", ord);
-              printf("case two\n");*/
             i=i+3;
 
           //  i+=3;
@@ -308,8 +294,6 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf2);
             sscanf(buf1, "%d", &amo);
             order[inc] = amo;
-            /*printf("%d\n", amo);
-              printf("case three\n");*/
             //i+=2;
             i=i+2;
           }
@@ -321,8 +305,7 @@ void process_order(char or_array[],int size, int order[50])
             strcat(buf1,buf3);
             sscanf(buf1, "%d", &amo);
             order[inc] = amo;
-            /*printf("%d\n", amo);
-              printf("case four\n");*/
+
               i=i+3;
             //i+=3;
             /*strcat(buf1,or_array[i]);
